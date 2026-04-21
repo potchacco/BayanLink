@@ -1,0 +1,176 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-color: rgba(214, 214, 214, 0.167);
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.nav-container .nav-logo {
+    color: black;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+}
+
+.nav-container .nav-logo h2 {
+    margin-top: 5px;
+}
+
+.nav-container .nav-logo #grayed {
+    color: gray;
+    font-size: 12px;
+    margin-top: -20px;
+    font-weight: 300;
+}
+
+.nav-container .nav-links a {
+    text-decoration: none;
+    color: rgb(90, 90, 90);
+    margin-left: 10px;
+}
+
+.nav-container .options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.nav-container .options i, button {
+    margin-left: 12px;
+}
+
+.nav-container .options button {
+    padding: 8px 10px;
+    border: none;
+    background-color: blue;
+    color: white;
+    border-radius: 10px;
+}
+
+.main-container {
+      width: 50vw;
+      display: flex;
+      flex-direction: column;
+      padding: 80px 90px;
+      height: 91vh;
+}
+
+.main-container .container-col #blue-text {
+    padding: 8px 10px;
+    background-color: rgba(40, 40, 243, 0.244);
+    color: blue;
+    display: inline-block;
+    border-radius: 50px;
+    margin-bottom: 20px;
+}
+
+.main-container .container-col h1 {
+    font-size: 4rem;
+    margin-bottom: 30px;
+}
+
+.main-container .container-col #gradient {
+    background: linear-gradient(to right, blue, cyan);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .container-col #discription {
+    color: rgb(90, 90, 90);
+    margin-bottom: 50px;
+    font-size: 1.2rem;
+}
+
+.main-container .container-col button {
+    padding: 12px 20px;
+    background-color: transparent;
+    color: rgb(112, 112, 112);
+    border-radius: 10px;
+    font-size: 16px;
+    width: 100%;
+    box-shadow: 1px 1px 4px rgba(104, 104, 104, 0.659);
+    border: none;
+    margin-bottom: 50px;
+    min-width: 300px;
+}
+
+.main-container .numbers {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 20px;
+}
+
+.main-container .numbers p {
+    text-align: center;
+}
+
+.main-container .numbers #blue {
+    color: blue;
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.main-container .numbers #green {
+    color: rgb(2, 170, 2);
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.main-container .numbers #purple {
+    color: purple;
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.divider {
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(214, 214, 214, 0.167);
+    width: 100%;
+    height: 91vh;
+    position: relative;
+}
+
+.divider img {
+    width: 600px;
+    height: 500px;
+    margin-top: 50px;
+    border-radius: 20px;
+}
+
+.divider #box {
+    position: absolute;
+    top: 75%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: black;
+    text-align: center;
+    align-items: center;
+    box-shadow:1px 1px 4px rgba(104, 104, 104, 0.659);
+    
+}
+
+.divider #grayed {
+    color: gray;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: 300;
+}
