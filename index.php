@@ -2,35 +2,50 @@
 require_once 'config/db.php';
 
 // ========== HANDLE LOGIN / REGISTER / LOGOUT ==========
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action']) && $_POST['action'] === 'login') {
-        $email = trim($_POST['email']);
-        $password = $_POST['password'];
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id']   = $user['id'];
-            $_SESSION['fullname']  = $user['fullname'];
-            $_SESSION['role']      = $user['role'];
-        }
+if (isset($_POST['action']) && $_POST['action'] === 'login') {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id']   = $user['id'];
+        $_SESSION['fullname']  = $user['fullname'];
+        $_SESSION['role']      = $user['role'];
+        // Clear any previous messages
+        unset($_SESSION['login_error']);
+        redirect('index.php');
+    } else {
+        $_SESSION['login_error'] = 'Invalid email or password.';
         redirect('index.php');
     }
+}
 
     if (isset($_POST['action']) && $_POST['action'] === 'register') {
-        $fullname = trim($_POST['fullname']);
-        $email    = trim($_POST['email']);
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $role     = $_POST['role'] ?? 'user';
+    // 1. Get and sanitize input
+    $fullname = trim($_POST['fullname']);
+    $email    = trim($_POST['email']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);  // hash immediately
+    $role     = $_POST['role'] ?? 'user';
 
+    // 2. Validation
+    $errors = [];
+    if (empty($fullname)) $errors[] = 'Full name is required.';
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid email is required.';
+    if (strlen($_POST['password']) < 6) $errors[] = 'Password must be at least 6 characters.';
+    if (empty($errors)) {
         $stmt = $pdo->prepare("INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, ?)");
         if ($stmt->execute([$fullname, $email, $password, $role])) {
-            $_SESSION['user_id']   = $pdo->lastInsertId();
-            $_SESSION['fullname']  = $fullname;
-            $_SESSION['role']      = $role;
+            // Do NOT log in – just show success message
+            $_SESSION['register_success'] = true;
+            redirect('index.php');
+        } else {
+            $errors[] = 'Registration failed. Please try again.';
         }
-        redirect('index.php');
     }
+    // If there are errors, store them and reload
+    $_SESSION['register_errors'] = $errors;
+    redirect('index.php');
 }
 
 // ========== LOGOUT ==========
@@ -69,13 +84,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_type']) && !isGu
         $stmt->execute([$user_id, $title, $desc, $user_role, $category, $location, $needed_date, $needed_time]);
     }
     elseif ($post_type === 'service' && $user_role === 'business_owner') {
-        $business = trim($_POST['business_name']);
-        $title = trim($_POST['title']);
-        $desc = trim($_POST['description']);
-        $price = trim($_POST['price_range']);
-        $stmt = $pdo->prepare("INSERT INTO services (business_owner_id, business_name, title, description, price_range) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$user_id, $business, $title, $desc, $price]);
+    $business = trim($_POST['business_name']);
+    $title = trim($_POST['title']);
+    $desc = trim($_POST['description']);
+    $price = trim($_POST['price_range']);
+    $image_path = null;
+
+    // Handle image upload
+    if (!empty($_FILES['service_image']['name'])) {
+        $target_dir = "uploads/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0755, true);
+        }
+        $file_name = time() . "_" . basename($_FILES['service_image']['name']);
+        $target_file = $target_dir . $file_name;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($imageFileType, $allowed) && $_FILES['service_image']['size'] < 5000000) {
+            if (move_uploaded_file($_FILES['service_image']['tmp_name'], $target_file)) {
+                $image_path = $target_file;
+            }
+        }
     }
+
+    $stmt = $pdo->prepare("INSERT INTO services (business_owner_id, business_name, title, description, price_range, image_path) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$user_id, $business, $title, $desc, $price, $image_path]);
+}
     elseif ($post_type === 'event' && $user_role === 'admin') {
         $title = trim($_POST['title']);
         $desc = trim($_POST['description']);
@@ -246,6 +280,7 @@ if (!isGuest()) {
             <h2 class="text-2xl font-bold">Welcome Back</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">Sign in to your account</p>
         </div>
+        <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm"></div>
         <form method="POST" action="index.php" class="space-y-4">
             <input type="hidden" name="action" value="login">
             <!-- Email -->
@@ -292,6 +327,7 @@ if (!isGuest()) {
             <h2 class="text-2xl font-bold">Create Account</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">Join the community</p>
         </div>
+        <div id="registerError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm"></div>
         <form method="POST" action="index.php" class="space-y-4">
             <input type="hidden" name="action" value="register">
             <div>
@@ -323,7 +359,7 @@ if (!isGuest()) {
                 <select name="role" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-primary-500 outline-none">
                     <option value="user">Community Member</option>
                     <option value="business_owner">Business Owner</option>
-                    <option value="admin">Admin</option>
+                    <!-- <option value="admin">Admin</option> -->
                 </select>
             </div>
             <button type="submit" class="w-full py-3 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition">
@@ -335,6 +371,25 @@ if (!isGuest()) {
         </p>
     </div>
 </div>
+
+<?php
+// Check for messages and pass them to JavaScript
+$showLoginModal = !empty($_SESSION['login_error']);
+$registerSuccess = !empty($_SESSION['register_success']);
+$registerErrors = $_SESSION['register_errors'] ?? [];
+// Clear them after reading
+if ($showLoginModal) {
+    $loginErrorMessage = $_SESSION['login_error'];
+    unset($_SESSION['login_error']);
+}
+if ($registerSuccess) {
+    unset($_SESSION['register_success']);
+}
+if (!empty($registerErrors)) {
+    $registerErrorList = $registerErrors;
+    unset($_SESSION['register_errors']);
+}
+?>
 
     <!-- Loading Screen -->
     <div class="loader" id="loader">
@@ -930,11 +985,15 @@ if (!isGuest()) {
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="border-r border-gray-200 dark:border-gray-700 pr-0 md:pr-6">
                                 <h3 class="font-semibold text-lg mb-4"><i class="fas fa-store mr-2 text-green-600"></i>Promote Your Business</h3>
-                                <form method="POST" class="space-y-4">
+                                <form method="POST" enctype="multipart/form-data" class="space-y-4">
                                     <input type="hidden" name="post_type" value="service">
                                     <div><label>Business Name <span class="text-red-500">*</span></label><input type="text" name="business_name" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></div>
                                     <div><label>Service Title <span class="text-red-500">*</span></label><input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></div>
                                     <div><label>Price Range</label><input type="text" name="price_range" placeholder="e.g., ₱200-500" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></div>
+                                    <div>
+                                    <label class="block text-sm font-medium mb-2">Business Image (optional)</label>
+                                    <input type="file" name="service_image" accept="image/*" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                                    </div>
                                     <div><label>Description <span class="text-red-500">*</span></label><textarea name="description" rows="3" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea></div>
                                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl"><i class="fas fa-store mr-2"></i>Post Service</button>
                                 </form>
@@ -1002,6 +1061,9 @@ if (!isGuest()) {
                                 <h4 class="font-bold text-lg mb-2"><?= htmlspecialchars($item['title']) ?></h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-4"><?= htmlspecialchars($item['description'] ?? $item['content'] ?? '') ?></p>
                                 <?php if ($item['type'] === 'service'): ?>
+                                    <?php if (!empty($item['image_path'])): ?>
+                                    <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="<?= htmlspecialchars($item['business_name']) ?>" class="w-full h-32 object-cover rounded-lg mb-3">
+                                <?php endif; ?>
                                     <div class="text-sm space-y-1 mb-3"><div><i class="fas fa-building mr-2 text-gray-400"></i><?= htmlspecialchars($item['business_name']) ?></div><?php if (!empty($item['price_range'])): ?><div><i class="fas fa-tag mr-2 text-gray-400"></i><?= htmlspecialchars($item['price_range']) ?></div><?php endif; ?></div>
                                 <?php elseif ($item['type'] === 'event'): ?>
                                     <div class="text-sm space-y-1 mb-3"><div><i class="far fa-calendar mr-2 text-gray-400"></i><?= date('F j, Y - g:i A', strtotime($item['event_date'])) ?></div><div><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i><?= htmlspecialchars($item['location']) ?></div><div><i class="fas fa-users mr-2 text-gray-400"></i><?= $item['participant_count'] ?> joined</div></div>
@@ -1041,6 +1103,33 @@ if (!isGuest()) {
         initCounters();
         initReveal();
     });
+
+    // After DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if ($showLoginModal): ?>
+        openModal('loginModal');
+        // Insert error into modal
+        const loginErrorDiv = document.getElementById('loginError');
+        if (loginErrorDiv) {
+            loginErrorDiv.innerHTML = '<?= htmlspecialchars($loginErrorMessage) ?>';
+            loginErrorDiv.classList.remove('hidden');
+        }
+    <?php endif; ?>
+    
+    <?php if ($registerSuccess): ?>
+        alert('✅ Registration successful! Please log in.');
+        openModal('loginModal');
+    <?php endif; ?>
+    
+    <?php if (!empty($registerErrorList)): ?>
+        openModal('registerModal');
+        const regErrorDiv = document.getElementById('registerError');
+        if (regErrorDiv) {
+            regErrorDiv.innerHTML = '<?= implode('<br>', array_map('htmlspecialchars', $registerErrorList)) ?>';
+            regErrorDiv.classList.remove('hidden');
+        }
+    <?php endif; ?>
+});
 
     // ---------- DARK MODE DEFAULT ----------
     const html = document.documentElement;
