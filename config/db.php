@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 $host = 'localhost';
 $dbname = 'bayanlink_db';
 $username = 'root';
@@ -16,6 +17,10 @@ try {
 // Helper functions
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
+}
+
+function isGuest() {
+    return !isset($_SESSION['user_id']);
 }
 
 function getUserRole() {

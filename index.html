@@ -1,0 +1,1666 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BayanLink - Smart Community Hub Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom CSS Variables for Glassmorphism */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .dark {
+            --glass-bg: rgba(17, 24, 39, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Glassmorphism Utility Classes */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+        
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.25);
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating Shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.6;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        /* Typing Effect Cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+        
+        /* Status Badges */
+        .status-pending {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        
+        .status-approved {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+        
+        .status-processing {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        }
+        
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        .dark .loader {
+            background: #111827;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        /* Notification Dropdown */
+        .notification-dropdown {
+            transform: scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-dropdown.active {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Business Card Hover Effects */
+        .business-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .business-card:hover::before {
+            left: 100%;
+        }
+        
+        /* Counter Animation */
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Filter Buttons */
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Mockup Device Frame */
+        .device-mockup {
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 8px solid #1f2937;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .dark .device-mockup {
+            border-color: #374151;
+        }
+        
+        /* Pulse Ring */
+        .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            animation: pulse-ring 2s ease-out infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        /* Navbar scroll effect */
+        .navbar-scrolled {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(20px) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .dark .navbar-scrolled {
+            background: rgba(17, 24, 39, 0.9) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300 overflow-x-hidden">
+
+    <?php if ($user_role === 'admin'): ?>
+    <!-- ==================== ADMIN DASHBOARD ==================== -->
+    <section class="pt-28 pb-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card rounded-2xl p-6 mb-6">
+                <h1 class="text-2xl font-bold mb-2">Admin Control Panel</h1>
+                <p class="text-gray-600 dark:text-gray-400">Manage all content and barangay services.</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <a href="#post-event" class="glass-card rounded-xl p-5 hover:scale-105 transition">
+                    <i class="fas fa-calendar-plus text-2xl text-blue-600 mb-2"></i>
+                    <h3 class="font-semibold">Create Event</h3>
+                </a>
+                <a href="#post-announcement" class="glass-card rounded-xl p-5 hover:scale-105 transition">
+                    <i class="fas fa-bullhorn text-2xl text-purple-600 mb-2"></i>
+                    <h3 class="font-semibold">Post Announcement</h3>
+                </a>
+                <a href="#feed" class="glass-card rounded-xl p-5 hover:scale-105 transition">
+                    <i class="fas fa-edit text-2xl text-green-600 mb-2"></i>
+                    <h3 class="font-semibold">Manage Posts</h3>
+                    <p class="text-xs text-gray-500">Edit/delete in feed</p>
+                </a>
+                <a href="manage_users.php" class="glass-card rounded-xl p-5 hover:scale-105 transition">
+                    <i class="fas fa-users-cog text-2xl text-orange-600 mb-2"></i>
+                    <h3 class="font-semibold">Manage Users</h3>
+                </a>
+            </div>
+
+            <!-- Post Forms Side by Side -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Event Form -->
+                <div id="post-event" class="glass-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4"><i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Create Event</h2>
+                    <form method="POST" class="space-y-4">
+                        <input type="hidden" name="post_type" value="event">
+                        <input type="text" name="title" placeholder="Event Title" required class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50">
+                        <textarea name="description" placeholder="Description" rows="3" required class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50"></textarea>
+                        <input type="datetime-local" name="event_date" required class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50">
+                        <input type="text" name="location" placeholder="Location" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50">
+                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl">Publish Event</button>
+                    </form>
+                </div>
+
+                <!-- Announcement Form -->
+                <div id="post-announcement" class="glass-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4"><i class="fas fa-bullhorn mr-2 text-purple-600"></i>Post Announcement</h2>
+                    <form method="POST" class="space-y-4">
+                        <input type="hidden" name="post_type" value="announcement">
+                        <input type="text" name="title" placeholder="Title" required class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50">
+                        <textarea name="content" placeholder="Content" rows="3" required class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50"></textarea>
+                        <select name="status" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800/50">
+                            <option value="Processing">Processing</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Ready for Claim">Ready for Claim</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl">Publish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php else: ?>
+    <!-- If admin is logged in, the normal hero and sections will NOT show; they go here -->
+<?php endif; ?>
+    
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="flex flex-col items-center">
+            <div class="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
+            <p class="text-lg font-display font-semibold gradient-text">BayanLink</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading your community...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="glass mx-4 mt-4 rounded-2xl px-6 py-4" id="navContainer">
+            <div class="flex items-center justify-between max-w-7xl mx-auto">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                        <i class="fas fa-network-wired text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-display font-bold gradient-text">BayanLink</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#feed" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors nav-link">Community</a>
+                    <a href="#businesses" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors nav-link">Businesses</a>
+                    <a href="#services" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors nav-link">Services</a>
+                    <a href="#features" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors nav-link">Features</a>
+                </div>
+                
+                <!-- Right Actions -->
+<div class="flex items-center space-x-4">
+    <!-- User Info Badge -->
+    <div class="hidden md:flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
+        <i class="fas fa-user-circle text-primary-600"></i>
+        <span class="text-sm font-medium"><?= htmlspecialchars($user_name) ?></span>
+        <span class="text-xs px-2 py-0.5 rounded-full 
+            <?= $user_role === 'admin' ? 'bg-red-100 text-red-700' : 
+               ($user_role === 'business_owner' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700') ?>">
+            <?= ucfirst(str_replace('_', ' ', $user_role)) ?>
+        </span>
+    </div>
+
+    <!-- Notification Bell -->
+<div class="relative">
+    <button id="notificationBtn" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors relative">
+        <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
+        <?php if ($unread_count > 0): ?>
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        <?php endif; ?>
+    </button>
+    
+    <div id="notificationDropdown" class="notification-dropdown absolute right-0 mt-3 w-80 glass-card rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-sm">Notifications</h3>
+            <a href="mark_all_read.php" class="text-xs text-primary-600">Mark all read</a>
+        </div>
+        <div class="space-y-3 max-h-64 overflow-y-auto">
+            <?php if (empty($notifications)): ?>
+                <p class="text-xs text-gray-500 text-center py-4">No notifications</p>
+            <?php else: ?>
+                <?php foreach ($notifications as $n): ?>
+                    <div class="flex items-start space-x-3 p-2 rounded-lg <?= $n['is_read'] ? '' : 'bg-blue-50 dark:bg-blue-900/20' ?>">
+                        <div class="w-8 h-8 rounded-full bg-<?= $n['type'] === 'event' ? 'purple' : 'blue' ?>-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-<?= $n['type'] === 'event' ? 'calendar' : 'bullhorn' ?> text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs"><?= htmlspecialchars($n['message']) ?></p>
+                            <p class="text-xs text-gray-500 mt-1"><?= date('M j, g:i A', strtotime($n['created_at'])) ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+    <!-- Dark Mode Toggle -->
+    <button id="themeToggle" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors">
+        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+        <i class="fas fa-moon text-primary-300 hidden dark:block"></i>
+    </button>
+
+    <!-- Logout Button -->
+    <a href="logout.php" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+        <i class="fas fa-sign-out-alt text-gray-600 dark:text-gray-300"></i>
+    </a>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="md:hidden w-10 h-10 rounded-full glass-card flex items-center justify-center">
+        <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+    </button>
+</div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden mx-4 mt-2 glass-card rounded-2xl p-4">
+            <div class="flex flex-col space-y-3">
+                <a href="#feed" class="px-4 py-2 rounded-lg hover:bg-white/10 transition-colors mobile-nav-link">Community</a>
+                <a href="#businesses" class="px-4 py-2 rounded-lg hover:bg-white/10 transition-colors mobile-nav-link">Businesses</a>
+                <a href="#services" class="px-4 py-2 rounded-lg hover:bg-white/10 transition-colors mobile-nav-link">Services</a>
+                <a href="#features" class="px-4 py-2 rounded-lg hover:bg-white/10 transition-colors mobile-nav-link">Features</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+     <?php if ($user_role !== 'admin'): ?>
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 px-4">
+        <!-- Animated Background Shapes -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="floating-shape w-96 h-96 bg-primary-400 top-20 -left-20" style="animation-delay: 0s;"></div>
+            <div class="floating-shape w-72 h-72 bg-accent-400 top-40 right-10" style="animation-delay: 2s;"></div>
+            <div class="floating-shape w-64 h-64 bg-purple-400 bottom-20 left-1/3" style="animation-delay: 4s;"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-gray-900/50 dark:to-gray-900"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center px-4 py-2 rounded-full glass-card mb-6 text-sm font-medium text-primary-700 dark:text-primary-300">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                    Now Serving 50+ Barangays
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
+                    <span class="block text-gray-900 dark:text-white">Connect Your</span>
+                    <span class="gradient-text typing-cursor" id="typingText">Community</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                    BayanLink is the next-generation platform that bridges residents, local businesses, and public services in one unified digital ecosystem.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button class="px-8 py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold text-lg shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center space-x-2">
+                        <span>Explore Services</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="px-8 py-4 rounded-2xl glass-card font-semibold text-lg hover:bg-white/20 transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="fas fa-play-circle text-primary-600 dark:text-primary-400"></i>
+                        <span>View Demo</span>
+                    </button>
+                </div>
+                
+                <!-- Trust Indicators -->
+                <div class="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-8">
+                    <div class="text-center">
+                        <p class="text-3xl font-bold gradient-text counter" data-target="15000">0</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Active Residents</p>
+                    </div>
+                    <div class="w-px h-12 bg-gray-300 dark:bg-gray-700 hidden sm:block"></div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold gradient-text counter" data-target="500">0</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Local Businesses</p>
+                    </div>
+                    <div class="w-px h-12 bg-gray-300 dark:bg-gray-700 hidden sm:block"></div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold gradient-text counter" data-target="98">0</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">% Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Content - Dashboard Preview -->
+            <div class="relative">
+                <div class="device-mockup bg-gray-900 aspect-[4/3] relative overflow-hidden">
+                    <!-- Mock Dashboard Header -->
+                    <div class="bg-gray-800 px-4 py-3 flex items-center justify-between border-b border-gray-700">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="text-xs text-gray-400">bayanlink.com/dashboard</div>
+                        <div class="w-16"></div>
+                    </div>
+                    
+                    <!-- Mock Dashboard Content -->
+                    <div class="p-6 grid grid-cols-3 gap-4">
+                        <div class="col-span-1 space-y-3">
+                            <div class="h-8 bg-gray-700 rounded-lg w-full"></div>
+                            <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+                            <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                            <div class="mt-6 space-y-2">
+                                <div class="h-10 bg-primary-600/30 rounded-lg"></div>
+                                <div class="h-10 bg-gray-700 rounded-lg"></div>
+                                <div class="h-10 bg-gray-700 rounded-lg"></div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="h-24 bg-gradient-to-br from-primary-600/20 to-accent-600/20 rounded-xl border border-white/10"></div>
+                                <div class="h-24 bg-gradient-to-br from-green-600/20 to-blue-600/20 rounded-xl border border-white/10"></div>
+                            </div>
+                            <div class="h-32 bg-gray-800 rounded-xl border border-gray-700"></div>
+                            <div class="h-20 bg-gray-800 rounded-xl border border-gray-700"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-20 -right-4 glass-card p-3 rounded-xl animate-float">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white font-medium">Request Approved</p>
+                                <p class="text-xs text-gray-400">Barangay Clearance</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-20 -left-4 glass-card p-3 rounded-xl animate-float" style="animation-delay: 1s;">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                                <i class="fas fa-user-plus text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white font-medium">New Member</p>
+                                <p class="text-xs text-gray-400">Joined community</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-gray-400 text-xl"></i>
+        </div>
+    </section>
+
+    <!-- Post Creation Section (Conditional by Role) -->
+<section class="py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-display font-bold mb-6 flex items-center">
+                <i class="fas fa-pen-fancy mr-3 text-primary-600"></i>
+                Share Something
+            </h2>
+
+            <?php if ($user_role === 'user'): ?>
+    <form method="POST" class="space-y-4">
+        <input type="hidden" name="post_type" value="looking_for">
+        <div>
+            <label class="block text-sm font-medium mb-2">What do you need? <span class="text-red-500">*</span></label>
+            <input type="text" name="title" required placeholder="e.g., Looking for a carpenter" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Category</label>
+                <select name="category" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                    <option value="">Select Category</option>
+                    <option value="Carpentry">Carpentry</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Delivery">Delivery</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Location</label>
+                <input type="text" name="location" placeholder="Where is this needed?" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Date Needed</label>
+                <input type="date" name="needed_date" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Time (Optional)</label>
+                <input type="time" name="needed_time" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+            </div>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-2">Description <span class="text-red-500">*</span></label>
+            <textarea name="description" rows="3" required placeholder="Details about the job..." class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea>
+        </div>
+        <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-paper-plane mr-2"></i>Post Request
+        </button>
+    </form>
+
+            <?php elseif ($user_role === 'business_owner'): ?>
+                <!-- Business Owner: Two options - Post Service OR Looking For -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Left: Post a Service -->
+                    <div class="border-r border-gray-200 dark:border-gray-700 pr-0 md:pr-6">
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-store mr-2 text-green-600"></i>Promote Your Business
+                        </h3>
+                        <form method="POST" class="space-y-4">
+                            <input type="hidden" name="post_type" value="service">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Business Name <span class="text-red-500">*</span></label>
+                                <input type="text" name="business_name" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Service Title <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Price Range</label>
+                                <input type="text" name="price_range" placeholder="e.g., ₱200-500" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description <span class="text-red-500">*</span></label>
+                                <textarea name="description" rows="3" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition">
+                                <i class="fas fa-store mr-2"></i>Post Service
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Looking For Request -->
+                    <div>
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-search mr-2 text-blue-600"></i>Looking For Help
+                        </h3>
+                        <form method="POST" class="space-y-4">
+                            <input type="hidden" name="post_type" value="looking_for">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">What do you need? <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" required placeholder="e.g., Looking for a carpenter" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description <span class="text-red-500">*</span></label>
+                                <textarea name="description" rows="3" required placeholder="Details about the job..." class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition">
+                                <i class="fas fa-hands-helping mr-2"></i>Post Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            <?php elseif ($user_role === 'admin'): ?>
+                <!-- Admin: Events & Announcements side-by-side on desktop, stacked on mobile -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Event Form -->
+                    <div>
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Create Event
+                        </h3>
+                        <form method="POST" class="space-y-4">
+                            <input type="hidden" name="post_type" value="event">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Event Title <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description <span class="text-red-500">*</span></label>
+                                <textarea name="description" rows="3" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Date & Time <span class="text-red-500">*</span></label>
+                                <input type="datetime-local" name="event_date" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Location</label>
+                                <input type="text" name="location" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition">
+                                <i class="fas fa-calendar-plus mr-2"></i>Publish Event
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Announcement Form -->
+                    <div>
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-bullhorn mr-2 text-purple-600"></i>Post Announcement
+                        </h3>
+                        <form method="POST" class="space-y-4">
+                            <input type="hidden" name="post_type" value="announcement">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Title <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Content <span class="text-red-500">*</span></label>
+                                <textarea name="content" rows="3" required class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Status</label>
+                                <select name="status" class="w-full px-4 py-3 rounded-xl border dark:bg-gray-800/50">
+                                    <option value="Processing">Processing</option>
+                                    <option value="Ready">Ready</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition">
+                                <i class="fas fa-bullhorn mr-2"></i>Publish Announcement
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+    <!-- Live Community Feed Section -->
+<section id="feed" class="py-24 px-4 relative">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 reveal">
+            <span class="inline-block px-4 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">Live Updates</span>
+            <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Community <span class="gradient-text">Feed</span></h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Stay connected with real-time updates from your neighbors, local officials, and community events.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <?php if (empty($feed_items)): ?>
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <i class="fas fa-newspaper text-4xl mb-3 opacity-50"></i>
+                    <p>No posts yet. Be the first to share!</p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($feed_items as $item): ?>
+                    <div class="glass-card rounded-2xl p-6 reveal hover:scale-[1.02] transition-transform duration-300">
+                        <!-- Type Badge -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                                <?php
+                                switch($item['type']) {
+                                    case 'looking_for':
+                                        echo 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300'; break;
+                                    case 'service':
+                                        echo 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'; break;
+                                    case 'event':
+                                        echo 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300'; break;
+                                    case 'announcement':
+                                        echo 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300'; break;
+                                }
+                                ?>">
+                                <i class="fas fa-<?= 
+                                    $item['type'] === 'looking_for' ? 'search' : 
+                                    ($item['type'] === 'service' ? 'store' : 
+                                    ($item['type'] === 'event' ? 'calendar-check' : 'bullhorn')) ?> mr-1"></i>
+                                <?= $item['type'] === 'looking_for' ? 'Looking For' : ucfirst($item['type']) ?>
+                            </span>
+                            <span class="text-xs text-gray-400"><?= date('M j, g:i A', strtotime($item['created_at'])) ?></span>
+                        </div>
+                        
+                        <h4 class="font-bold text-lg mb-2"><?= htmlspecialchars($item['title']) ?></h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                            <?= htmlspecialchars($item['description'] ?? $item['content'] ?? '') ?>
+                        </p>
+                        
+                        <?php if ($item['type'] === 'service'): ?>
+                            <div class="text-sm space-y-1 mb-3">
+                                <div><i class="fas fa-building mr-2 text-gray-400"></i><?= htmlspecialchars($item['business_name']) ?></div>
+                                <?php if (!empty($item['price_range'])): ?>
+                                    <div><i class="fas fa-tag mr-2 text-gray-400"></i><?= htmlspecialchars($item['price_range']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        <?php elseif ($item['type'] === 'event'): ?>
+                            <div class="text-sm space-y-1 mb-3">
+                                <div><i class="far fa-calendar mr-2 text-gray-400"></i><?= date('F j, Y - g:i A', strtotime($item['event_date'])) ?></div>
+                                <div><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i><?= htmlspecialchars($item['location']) ?></div>
+                                <div><i class="fas fa-users mr-2 text-gray-400"></i><?= $item['participant_count'] ?> joined</div>
+                            </div>
+                            <?php if ($user_role === 'user'): ?>
+                                <a href="?join_event=<?= $item['id'] ?>#feed" class="mt-2 inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition">
+                                    <i class="fas fa-check-circle mr-1"></i>Join Event
+                                </a>
+                            <?php endif; ?>
+                        <?php elseif ($item['type'] === 'announcement'): ?>
+                            <div class="mt-2">
+                                <span class="inline-block px-3 py-1 text-xs rounded-full 
+                                    <?= $item['status'] === 'Ready' ? 'bg-green-100 text-green-800' : 
+                                       ($item['status'] === 'Processing' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800') ?>">
+                                    Status: <?= $item['status'] ?>
+                                </span>
+                            </div>
+                        <?php elseif ($item['type'] === 'looking_for'): ?>
+                            <div class="mt-2">
+                                <span class="inline-block px-3 py-1 text-xs rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                                    <i class="fas fa-user-tag mr-1"></i>Posted by <?= ucfirst(str_replace('_', ' ', $item['author_role'] ?? 'user')) ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 flex items-center">
+                            <i class="fas fa-user-circle mr-1"></i>
+                            <?= htmlspecialchars($item['author']) ?>
+                        </div>
+                        <?php if ($user_role === 'admin'): ?>
+    <div class="mt-3 flex space-x-2">
+        <a href="edit_post.php?type=<?= $item['type'] ?>&id=<?= $item['id'] ?>" class="text-xs text-blue-600 hover:underline">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="delete_post.php?type=<?= $item['type'] ?>&id=<?= $item['id'] ?>" class="text-xs text-red-600 hover:underline" onclick="return confirm('Delete this post?')">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    </div>
+<?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+        
+        <div class="text-center mt-12">
+            <button class="px-8 py-3 rounded-full glass-card font-medium hover:bg-primary-50 dark:hover:bg-gray-800 transition-all duration-300 inline-flex items-center space-x-2 group">
+                <span>View All Posts</span>
+                <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+    <!-- Local Business Showcase -->
+    <section id="businesses" class="py-24 px-4 relative bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-800/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <span class="inline-block px-4 py-1 rounded-full bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 text-sm font-medium mb-4">Local Economy</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Discover Local <span class="gradient-text">Businesses</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Support your community by exploring and patronizing local enterprises.</p>
+            </div>
+            
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
+                <button class="filter-btn active px-6 py-2 rounded-full glass-card text-sm font-medium" data-filter="all">All</button>
+                <button class="filter-btn px-6 py-2 rounded-full glass-card text-sm font-medium" data-filter="food">Food & Dining</button>
+                <button class="filter-btn px-6 py-2 rounded-full glass-card text-sm font-medium" data-filter="services">Services</button>
+                <button class="filter-btn px-6 py-2 rounded-full glass-card text-sm font-medium" data-filter="retail">Retail</button>
+                <button class="filter-btn px-6 py-2 rounded-full glass-card text-sm font-medium" data-filter="health">Health</button>
+            </div>
+            
+            <!-- Business Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="businessGrid">
+                <!-- Business Card 1 -->
+                <div class="business-card glass-card rounded-2xl overflow-hidden reveal" data-category="food">
+                    <div class="h-48 bg-gradient-to-br from-orange-400 to-red-500 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-utensils text-white text-5xl opacity-80"></i>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 rounded-full bg-white/90 dark:bg-gray-900/90 text-xs font-semibold text-orange-600">Open</span>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-display font-bold text-lg mb-1">Mang Inasal Express</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Filipino BBQ & Grill</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                <span class="text-sm font-medium">4.8</span>
+                                <span class="text-xs text-gray-400">(124)</span>
+                            </div>
+                            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">₱150-300</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Card 2 -->
+                <div class="business-card glass-card rounded-2xl overflow-hidden reveal" data-category="services" style="transition-delay: 0.1s;">
+                    <div class="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-cut text-white text-5xl opacity-80"></i>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 rounded-full bg-white/90 dark:bg-gray-900/90 text-xs font-semibold text-green-600">Open</span>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-display font-bold text-lg mb-1">Glamour Salon</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Hair & Beauty Services</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                <span class="text-sm font-medium">4.9</span>
+                                <span class="text-xs text-gray-400">(89)</span>
+                            </div>
+                            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">₱200+</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Card 3 -->
+                <div class="business-card glass-card rounded-2xl overflow-hidden reveal" data-category="retail" style="transition-delay: 0.2s;">
+                    <div class="h-48 bg-gradient-to-br from-green-400 to-teal-500 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-shopping-basket text-white text-5xl opacity-80"></i>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 rounded-full bg-white/90 dark:bg-gray-900/90 text-xs font-semibold text-orange-600">Open</span>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-display font-bold text-lg mb-1">Tindahan ni Aling Nena</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Convenience Store</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                <span class="text-sm font-medium">4.7</span>
+                                <span class="text-xs text-gray-400">(256)</span>
+                            </div>
+                            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">₱10-500</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Card 4 -->
+                <div class="business-card glass-card rounded-2xl overflow-hidden reveal" data-category="health" style="transition-delay: 0.3s;">
+                    <div class="h-48 bg-gradient-to-br from-pink-400 to-rose-500 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-heartbeat text-white text-5xl opacity-80"></i>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 rounded-full bg-white/90 dark:bg-gray-900/90 text-xs font-semibold text-green-600">24/7</span>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-display font-bold text-lg mb-1">Barangay Health Center</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Medical Services</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                <span class="text-sm font-medium">4.9</span>
+                                <span class="text-xs text-gray-400">(312)</span>
+                            </div>
+                            <span class="text-sm font-semibold text-green-600">Free</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-8 py-3 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300 inline-flex items-center space-x-2">
+                    <span>Register Your Business</span>
+                    <i class="fas fa-store"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Request Preview -->
+    <section id="services" class="py-24 px-4 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="inline-block px-4 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-medium mb-4">Public Services</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Request Documents <span class="gradient-text">Online</span></h2>
+                    <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+                        Skip the long lines. Request barangay documents, report issues, and schedule appointments from the comfort of your home.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4 p-4 rounded-xl glass-card">
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-file-alt text-blue-600 dark:text-blue-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Barangay Clearance</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Get your clearance in 24 hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4 p-4 rounded-xl glass-card">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-home text-purple-600 dark:text-purple-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Certificate of Residency</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Proof of residence for official use</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4 p-4 rounded-xl glass-card">
+                            <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Report an Issue</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Report barangay concerns and emergencies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4 reveal">
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-600 dark:text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Juan Dela Cruz</h4>
+                                    <p class="text-xs text-gray-500">Req. #2024-00123</p>
+                                </div>
+                            </div>
+                            <span class="status-approved px-3 py-1 rounded-full text-xs font-semibold text-white">Approved</span>
+                        </div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Barangay Clearance for employment purposes</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>Submitted: Jan 15, 2024</span>
+                            <span>Processed: Jan 16, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-600 dark:text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Ana Reyes</h4>
+                                    <p class="text-xs text-gray-500">Req. #2024-00124</p>
+                                </div>
+                            </div>
+                            <span class="status-processing px-3 py-1 rounded-full text-xs font-semibold text-white">Processing</span>
+                        </div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Business Permit renewal for Sari-Sari Store</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>Submitted: Jan 16, 2024</span>
+                            <span>Est. completion: 2 days</span>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-600 dark:text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Pedro Santos</h4>
+                                    <p class="text-xs text-gray-500">Req. #2024-00125</p>
+                                </div>
+                            </div>
+                            <span class="status-pending px-3 py-1 rounded-full text-xs font-semibold text-white">Pending</span>
+                        </div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Road repair request - Main Street potholes</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>Submitted: Jan 16, 2024</span>
+                            <span>Awaiting review</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-4 relative bg-gradient-to-b from-gray-100 dark:from-gray-800/50 to-transparent">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="inline-block px-4 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-medium mb-4">Platform Features</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Why Choose <span class="gradient-text">BayanLink</span>?</h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Experience the future of community management with our comprehensive suite of digital tools.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card rounded-2xl p-8 text-center reveal group hover:scale-105 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-xl group-hover:shadow-blue-500/40 transition-shadow">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-3">Community Connection</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Connect with neighbors, join discussions, and stay updated with local events.</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 text-center reveal group hover:scale-105 transition-transform duration-300" style="transition-delay: 0.1s;">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/30 group-hover:shadow-xl group-hover:shadow-green-500/40 transition-shadow">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-3">Smart Services</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">AI-powered document processing and automated service request tracking.</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 text-center reveal group hover:scale-105 transition-transform duration-300" style="transition-delay: 0.2s;">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:shadow-xl group-hover:shadow-orange-500/40 transition-shadow">
+                        <i class="fas fa-store text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-3">Local Economy</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Support and discover local businesses. Boost your barangay's economy.</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 text-center reveal group hover:scale-105 transition-transform duration-300" style="transition-delay: 0.3s;">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-xl group-hover:shadow-purple-500/40 transition-shadow">
+                        <i class="fas fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-3">Real-Time Updates</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Instant notifications for announcements, emergencies, and service updates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section class="py-24 px-4 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Powerful <span class="gradient-text">Dashboard</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Get insights into your barangay's activity with our comprehensive analytics dashboard.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card rounded-2xl p-8 text-center reveal">
+                    <div class="text-5xl font-bold gradient-text mb-2 counter" data-target="15000">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">Total Residents</p>
+                    <div class="mt-4 flex items-center justify-center text-green-500 text-sm">
+                        <i class="fas fa-arrow-up mr-1"></i>
+                        <span>+12% this month</span>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 text-center reveal" style="transition-delay: 0.1s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 counter" data-target="500">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">Active Businesses</p>
+                    <div class="mt-4 flex items-center justify-center text-green-500 text-sm">
+                        <i class="fas fa-arrow-up mr-1"></i>
+                        <span>+8% this month</span>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 text-center reveal" style="transition-delay: 0.2s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 counter" data-target="3250">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">Requests Processed</p>
+                    <div class="mt-4 flex items-center justify-center text-green-500 text-sm">
+                        <i class="fas fa-arrow-up mr-1"></i>
+                        <span>+23% this month</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative reveal">
+                <div class="glass-card rounded-3xl p-2 shadow-2xl">
+                    <div class="bg-gray-900 rounded-2xl overflow-hidden">
+                        <div class="flex">
+                            <div class="w-64 bg-gray-800 p-6 hidden lg:block">
+                                <div class="flex items-center space-x-3 mb-8">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500"></div>
+                                    <span class="font-display font-bold text-white">Dashboard</span>
+                                </div>
+                                <nav class="space-y-2">
+                                    <div class="h-10 bg-primary-600/30 rounded-lg"></div>
+                                    <div class="h-10 bg-gray-700 rounded-lg"></div>
+                                    <div class="h-10 bg-gray-700 rounded-lg"></div>
+                                    <div class="h-10 bg-gray-700 rounded-lg"></div>
+                                </nav>
+                            </div>
+                            <div class="flex-1 p-6">
+                                <div class="grid grid-cols-3 gap-4 mb-6">
+                                    <div class="h-24 bg-gradient-to-br from-blue-600/20 to-blue-800/20 rounded-xl border border-blue-500/20"></div>
+                                    <div class="h-24 bg-gradient-to-br from-green-600/20 to-green-800/20 rounded-xl border border-green-500/20"></div>
+                                    <div class="h-24 bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-xl border border-purple-500/20"></div>
+                                </div>
+                                <div class="h-64 bg-gray-800 rounded-xl border border-gray-700 mb-6"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="h-40 bg-gray-800 rounded-xl border border-gray-700"></div>
+                                    <div class="h-40 bg-gray-800 rounded-xl border border-gray-700"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-4 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="glass-card rounded-3xl p-12 text-center relative overflow-hidden reveal">
+                <div class="absolute inset-0 opacity-30">
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-primary-500 rounded-full filter blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-accent-500 rounded-full filter blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+                </div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Ready to Transform Your <span class="gradient-text">Community</span>?</h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                        Join thousands of barangays already using BayanLink to connect, serve, and grow their communities.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button class="px-8 py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold text-lg shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transform hover:-translate-y-1 transition-all duration-300">
+                            Get Started Free
+                        </button>
+                        <button class="px-8 py-4 rounded-2xl glass-card font-semibold text-lg hover:bg-white/20 transition-all duration-300">
+                            Schedule Demo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                            <i class="fas fa-network-wired text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-display font-bold gradient-text">BayanLink</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Empowering communities through digital innovation. Connecting residents, businesses, and government services.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors">
+                            <i class="fab fa-facebook-f text-gray-600 dark:text-gray-400"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors">
+                            <i class="fab fa-twitter text-gray-600 dark:text-gray-400"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors">
+                            <i class="fab fa-instagram text-gray-600 dark:text-gray-400"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-display font-bold mb-4">Platform</h4>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Security</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Enterprise</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-display font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">API Reference</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Community Guidelines</a></li>
+                        <li><a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-display font-bold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope text-primary-600"></i>
+                            <span>hello@bayanlink.ph</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone text-primary-600"></i>
+                            <span>+63 (2) 8123 4567</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-primary-600"></i>
+                            <span>Makati City, Philippines</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    © 2024 BayanLink. All rights reserved.
+                </p>
+                <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500 dark:text-gray-400">
+                    <a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button id="chatToggle" class="w-14 h-14 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/50 transform hover:scale-110 transition-all duration-300 flex items-center justify-center relative">
+            <i class="fas fa-comments text-xl"></i>
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center animate-pulse">2</span>
+        </button>
+        
+        <div id="chatWindow" class="absolute bottom-16 right-0 w-80 glass-card rounded-2xl overflow-hidden shadow-2xl transform scale-0 opacity-0 transition-all duration-300 origin-bottom-right">
+            <div class="bg-gradient-to-r from-primary-600 to-accent-600 p-4 text-white">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold">Barangay Support</h4>
+                    <button id="closeChat" class="hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-white/80 mt-1">We typically reply within minutes</p>
+            </div>
+            <div class="h-80 p-4 overflow-y-auto bg-white/50 dark:bg-gray-900/50">
+                <div class="flex items-start space-x-2 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-xs"></i>
+                    </div>
+                    <div class="glass-card rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
+                        <p class="text-sm">Hello! How can I help you with BayanLink today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80">
+                <div class="flex items-center space-x-2">
+                    <input type="text" placeholder="Type a message..." class="flex-1 px-4 py-2 rounded-full glass-card text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <button class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white flex items-center justify-center hover:shadow-lg transition-shadow">
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript: All interactive features -->
+    <script>
+        (function(){
+            "use strict";
+
+            // ========== LOADER ==========
+            window.addEventListener('load', function() {
+                const loader = document.getElementById('loader');
+                setTimeout(() => loader.classList.add('hidden'), 500);
+                initCounters();
+                initReveal();
+            });
+
+            // ========== THEME TOGGLE (Dark/Light) ==========
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            });
+
+            // ========== MOBILE MENU ==========
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            // Close mobile menu when link clicked
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // ========== NOTIFICATION DROPDOWN ==========
+            const notifBtn = document.getElementById('notificationBtn');
+            const notifDropdown = document.getElementById('notificationDropdown');
+            
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifDropdown.classList.toggle('active');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                    notifDropdown.classList.remove('active');
+                }
+            });
+
+            // ========== CHAT WIDGET ==========
+            const chatToggle = document.getElementById('chatToggle');
+            const chatWindow = document.getElementById('chatWindow');
+            const closeChat = document.getElementById('closeChat');
+            
+            chatToggle.addEventListener('click', () => {
+                chatWindow.classList.toggle('scale-0');
+                chatWindow.classList.toggle('opacity-0');
+                chatWindow.classList.toggle('scale-100');
+                chatWindow.classList.toggle('opacity-100');
+            });
+            
+            closeChat.addEventListener('click', () => {
+                chatWindow.classList.add('scale-0', 'opacity-0');
+                chatWindow.classList.remove('scale-100', 'opacity-100');
+            });
+
+            // ========== SMOOTH SCROLL FOR ANCHOR LINKS ==========
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === "#" || href === "") return;
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ========== NAVBAR SCROLL EFFECT ==========
+            const navbar = document.getElementById('navbar');
+            const navContainer = document.getElementById('navContainer');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navContainer.classList.add('navbar-scrolled');
+                } else {
+                    navContainer.classList.remove('navbar-scrolled');
+                }
+            });
+
+            // ========== TYPING EFFECT ==========
+            const typingElement = document.getElementById('typingText');
+            const words = ['Community', 'Business', 'Services', 'Barangay'];
+            let wordIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            
+            function typeEffect() {
+                const currentWord = words[wordIndex];
+                if (isDeleting) {
+                    typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                
+                if (!isDeleting && charIndex === currentWord.length) {
+                    isDeleting = true;
+                    setTimeout(typeEffect, 1500);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                    setTimeout(typeEffect, 200);
+                } else {
+                    setTimeout(typeEffect, isDeleting ? 80 : 120);
+                }
+            }
+            setTimeout(typeEffect, 1000);
+
+            // ========== COUNTER ANIMATION ==========
+            function animateCounter(el) {
+                const target = parseInt(el.getAttribute('data-target'));
+                const isPercentage = el.textContent.includes('%');
+                let current = 0;
+                const increment = target / 60;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        el.textContent = isPercentage ? target + '%' : target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = isPercentage ? Math.floor(current) + '%' : Math.floor(current).toLocaleString();
+                    }
+                }, 16);
+            }
+
+            function initCounters() {
+                const counters = document.querySelectorAll('.counter');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const el = entry.target;
+                            if (!el.classList.contains('counted')) {
+                                animateCounter(el);
+                                el.classList.add('counted');
+                            }
+                        }
+                    });
+                }, { threshold: 0.5 });
+                counters.forEach(c => observer.observe(c));
+            }
+
+            // ========== SCROLL REVEAL ==========
+            function initReveal() {
+                const reveals = document.querySelectorAll('.reveal');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.15 });
+                reveals.forEach(el => observer.observe(el));
+            }
+
+            // ========== BUSINESS FILTER ==========
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const businessCards = document.querySelectorAll('#businessGrid .business-card');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filterValue = btn.getAttribute('data-filter');
+                    
+                    businessCards.forEach(card => {
+                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // ========== LIKE BUTTONS ==========
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.like-count');
+                    let count = parseInt(countSpan.textContent);
+                    
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        count++;
+                        // Add small animation
+                        this.classList.add('text-red-500');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        count--;
+                        this.classList.remove('text-red-500');
+                    }
+                    countSpan.textContent = count;
+                });
+            });
+
+            // ========== GSAP SCROLLTRIGGER REGISTRATION ==========
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Optional: Parallax effect for floating shapes
+            gsap.to('.floating-shape', {
+                y: -30,
+                scrollTrigger: {
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+
+            // Animate hero elements
+            gsap.from('.device-mockup', {
+                y: 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: 'power3.out'
+            });
+
+            // ========== ADDITIONAL: NOTIFICATION BADGE TOGGLE ==========
+            // Simulate reading notifications
+            const notifItems = document.querySelectorAll('#notificationList .cursor-pointer');
+            notifItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Just for demo: remove badge when any notif clicked
+                    const badge = document.querySelector('#notificationBtn .animate-pulse');
+                    if (badge) badge.style.display = 'none';
+                });
+            });
+
+            // Close mobile menu on window resize if > md
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+
+            // Initialize all reveals again after images load
+            window.addEventListener('load', () => {
+                initReveal();
+            });
+
+        })();
+    </script>
+</body>
+</html>
